@@ -1,40 +1,35 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   try {
-    const { review, tone, businessType } = await req.json();
-
+    const { review } = await req.json();
+    
+    // Промпт теперь на английском. 
+    // Логика: Отвечать на том языке, на котором написан отзыв (Review Language).
+    // Это универсально: если вставят иврит - ответит на иврите, если английский - на английском.
     const prompt = `
-      Ты — опытный менеджер по репутации для ${businessType || 'ресторана'}.
-      Твоя задача: Написать ответ на отзыв клиента.
+      You are an expert restaurant reputation manager.
+      Task: Write a reply to a customer review.
+      Tone: Professional, empathetic, polite, and brand-safe.
+      Instructions:
+      1. If the review is negative: Apologize for the specific issue, do not be defensive, offer a solution or invite them back to make it right.
+      2. If the review is positive: Thank them warmly.
+      3. Language: Write the response in the SAME language as the review.
       
-      Отзыв клиента: "${review}"
-      
-      Требования к ответу:
-      1. Тональность: ${tone || 'Вежливая и профессиональная'}.
-      2. Если отзыв негативный: извинись, прояви эмпатию, не оправдывайся агрессивно, предложи решение.
-      3. Если отзыв позитивный: поблагодари, пригласи снова.
-      4. Язык ответа: English (или язык отзыва).
-      5. Кратко (не более 3-4 предложений).
-      
-      Ответ:
+      Customer Review: "${review}"
     `;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      max_tokens: 150,
+      max_tokens: 300,
     });
 
-    const reply = completion.choices[0].message.content;
-
-    return NextResponse.json({ reply });
+    return NextResponse.json({ reply: completion.choices[0].message.content });
   } catch (error) {
-    return NextResponse.json({ error: 'Error generating response' }, { status: 500 });
+    return NextResponse.json({ error: 'Error' }, { status: 500 });
   }
 }
