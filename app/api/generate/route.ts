@@ -5,31 +5,48 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   try {
-    const { review } = await req.json();
+    // Получаем не только отзыв, но и настройки владельца
+    const { review, ownerName, restaurantName, ownerLang } = await req.json();
     
-    // Промпт теперь на английском. 
-    // Логика: Отвечать на том языке, на котором написан отзыв (Review Language).
-    // Это универсально: если вставят иврит - ответит на иврите, если английский - на английском.
+    // Определяем язык для перевода владельцу (по умолчанию Английский, если не выбран)
+    const targetLang = ownerLang || 'English';
+    
     const prompt = `
       You are an expert restaurant reputation manager.
-      Task: Write a reply to a customer review.
-      Tone: Professional, empathetic, polite, and brand-safe.
-      Instructions:
-      1. If the review is negative: Apologize for the specific issue, do not be defensive, offer a solution or invite them back to make it right.
-      2. If the review is positive: Thank them warmly.
-      3. Language: Write the response in the SAME language as the review.
       
+      CONTEXT:
+      Restaurant Name: "${restaurantName || 'Our Restaurant'}"
+      Owner Name: "${ownerName || 'Management'}"
+      
+      TASK:
+      1. Analyze the customer review.
+      2. Write a professional reply in the SAME language as the review.
+      3. Sign the reply with the Owner Name and Restaurant Name.
+      4. Provide a translation of your reply into ${targetLang} so the owner understands what was written.
+
+      FORMAT:
+      Return the response in JSON format:
+      {
+        "reply": "The actual reply text in the customer's language...",
+        "translation": "The translation for the owner in ${targetLang}..."
+      }
+
       Customer Review: "${review}"
     `;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      max_tokens: 300,
+      response_format: { type: "json_object" }, // Заставляем ИИ отвечать строго в JSON
+      max_tokens: 500,
     });
 
-    return NextResponse.json({ reply: completion.choices[0].message.content });
+    // Парсим ответ ИИ
+    const result = JSON.parse(completion.choices[0].message.content || '{}');
+
+    return NextResponse.json(result);
   } catch (error) {
-    return NextResponse.json({ error: 'Error' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error: 'Error generating response' }, { status: 500 });
   }
 }
