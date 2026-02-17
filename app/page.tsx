@@ -17,7 +17,7 @@ export default function Home() {
   // Лимиты и оплата
   const [count, setCount] = useState(0);
   
-  // 🔥 ВОТ ТВОЯ ССЫЛКА НА ОПЛАТУ 🔥
+  // 🔥 ТВОЯ ГОТОВАЯ ССЫЛКА НА ОПЛАТУ 🔥
   const PADDLE_CHECKOUT_LINK = 'https://buy.paddle.com/items?price_ids=pri_01khnaa03z25nsm9xzm7tz7sys'; 
 
   // Загрузка настроек при старте
@@ -131,8 +131,14 @@ export default function Home() {
                 <option value="English">English</option>
                 <option value="Hebrew">Hebrew (עברית)</option>
                 <option value="Russian">Russian (Русский)</option>
-                <option value="Spanish">Spanish</option>
-                <option value="French">French</option>
+                <option value="Arabic">Arabic (العربية)</option>
+                <option value="Spanish">Spanish (Español)</option>
+                <option value="French">French (Français)</option>
+                <option value="German">German (Deutsch)</option>
+                <option value="Italian">Italian (Italiano)</option>
+                <option value="Portuguese">Portuguese (Português)</option>
+                <option value="Chinese">Chinese (中文)</option>
+                <option value="Japanese">Japanese (日本語)</option>
               </select>
               <p style={{ fontSize: '0.8rem', color: '#718096', marginTop: '5px' }}>
                 *The reply itself will be in the customer's language. This is just for you to verify.
@@ -220,7 +226,7 @@ export default function Home() {
       </main>
       
       <footer style={{ textAlign: 'center', marginTop: '50px', color: '#a0aec0', fontSize: '0.9rem' }}>
-        © 2026 RestoReview.online
+        © 2024 RestoReview.online
       </footer>
     </div>
   );
