@@ -268,8 +268,12 @@ export default function Home() {
             Need help? Contact us: <a href="mailto:restoreview.connect@gmail.com" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: '500' }}>restoreview.connect@gmail.com</a>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', fontSize: '0.85rem', color: '#94a3b8' }}>
-            <a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Terms of Service</a>
-            <a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Privacy Policy</a>
+            <a href="/legal" style={{ color: '#94a3b8', textDecoration: 'none' }}>Terms of Service</a>
+<a href="/legal" style={{ color: '#94a3b8', textDecoration: 'none' }}>Terms of Service</a>
+
+            <a href="/legal" style={{ color: '#94a3b8', textDecoration: 'none' }}>Terms of Service</a>
+<a href="/legal" style={{ color: '#94a3b8', textDecoration: 'none' }}>Privacy Policy</a>
+
           </div>
           <div style={{ marginTop: '20px', fontSize: '0.8rem', color: '#cbd5e1' }}>
             © 2026 RestoReview.online. All rights reserved.
