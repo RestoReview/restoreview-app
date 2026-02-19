@@ -265,14 +265,14 @@ export default function Home() {
         {/* FOOTER (ВАЖНО ДЛЯ PADDLE) */}
         <footer style={{ marginTop: '60px', borderTop: '1px solid #e2e8f0', paddingTop: '30px', textAlign: 'center' }}>
           <div style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '15px' }}>
-            Need help? Contact us: <a href="mailto:support@restoreview.online" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: '500' }}>support@restoreview.online</a>
+            Need help? Contact us: <a href="mailto:restoreview.connect@gmail.com" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: '500' }}>restoreview.connect@gmail.com</a>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', fontSize: '0.85rem', color: '#94a3b8' }}>
             <a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Terms of Service</a>
             <a href="#" style={{ color: '#94a3b8', textDecoration: 'none' }}>Privacy Policy</a>
           </div>
           <div style={{ marginTop: '20px', fontSize: '0.8rem', color: '#cbd5e1' }}>
-            © 2024 RestoReview.online. All rights reserved.
+            © 2026 RestoReview.online. All rights reserved.
           </div>
         </footer>
 
