@@ -5,10 +5,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   try {
-    // Получаем не только отзыв, но и настройки владельца
     const { review, ownerName, restaurantName, ownerLang } = await req.json();
-    
-    // Определяем язык для перевода владельцу (по умолчанию Английский, если не выбран)
     const targetLang = ownerLang || 'English';
     
     const prompt = `
@@ -20,15 +17,17 @@ export async function POST(req: Request) {
       
       TASK:
       1. Analyze the customer review.
-      2. Write a professional reply in the SAME language as the review.
-      3. Sign the reply with the Owner Name and Restaurant Name.
-      4. Provide a translation of your reply into ${targetLang} so the owner understands what was written.
+      2. Translate the customer's original review into ${targetLang} so the owner fully understands the complaint.
+      3. Write a professional, empathetic, and polite reply to the review in the SAME language as the original review.
+      4. Sign the reply with the Owner Name and Restaurant Name.
+      5. Provide a translation of your reply into ${targetLang}.
 
       FORMAT:
-      Return the response in JSON format:
+      Return strictly in JSON format:
       {
+        "reviewTranslation": "Translation of the original customer review into ${targetLang}...",
         "reply": "The actual reply text in the customer's language...",
-        "translation": "The translation for the owner in ${targetLang}..."
+        "translation": "The translation of the reply for the owner in ${targetLang}..."
       }
 
       Customer Review: "${review}"
@@ -37,13 +36,11 @@ export async function POST(req: Request) {
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" }, // Заставляем ИИ отвечать строго в JSON
-      max_tokens: 500,
+      response_format: { type: "json_object" },
+      max_tokens: 700,
     });
 
-    // Парсим ответ ИИ
     const result = JSON.parse(completion.choices[0].message.content || '{}');
-
     return NextResponse.json(result);
   } catch (error) {
     console.error(error);
