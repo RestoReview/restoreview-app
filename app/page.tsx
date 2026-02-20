@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 
 export default function Home() {
   const [review, setReview] = useState('');
@@ -100,14 +101,27 @@ export default function Home() {
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#f8fafc', minHeight: '100vh', color: '#0f172a' }}>
       
-      {/* Навигация / Хедер */}
-      <nav style={{ background: '#ffffff', padding: '20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+      {/* Навигация / Хедер с интеграцией Clerk */}
+      <nav style={{ background: '#ffffff', padding: '15px 20px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
         <div style={{ width: '100%', maxWidth: '800px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ fontSize: '1.5rem', fontWeight: '800', color: '#1e3a8a', letterSpacing: '-0.5px' }}>
             RestoReview<span style={{color:'#2563eb'}}>.</span>
           </div>
-          <div style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: '500' }}>
-            AI Reputation Manager
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            {/* Кнопка входа (показывается только если НЕ вошел) */}
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button style={{ background: '#f1f5f9', color: '#0f172a', border: '1px solid #e2e8f0', padding: '8px 16px', borderRadius: '10px', fontWeight: '600', cursor: 'pointer', fontSize: '0.9rem', transition: 'all 0.2s' }}>
+                  Sign In
+                </button>
+              </SignInButton>
+            </SignedOut>
+            
+            {/* Аватарка юзера (показывается только если вошел) */}
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
           </div>
         </div>
       </nav>
