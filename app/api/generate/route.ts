@@ -4,23 +4,21 @@ import { Redis } from '@upstash/redis';
 import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 
-// 1. Инициализируем OpenAI
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-// 2. Инициализируем Redis (Защита лимитов)
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
-
-// 3. Инициализируем Supabase (База данных)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 export async function POST(req: Request) {
   try {
+    // 🔥 Инициализируем сервисы ВНУТРИ функции, чтобы избежать ошибки Vercel Build
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    
+    const redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    });
+
+    // Добавляем заглушку, чтобы Next.js не ругался при компиляции
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
     const { review, ownerName, restaurantName, ownerLang } = await req.json();
     const targetLang = ownerLang || 'English';
 
@@ -32,19 +30,16 @@ export async function POST(req: Request) {
     // ==========================================
     // ЭТАП B: ПРОВЕРКА АВТОРИЗАЦИИ И ПОДПИСКИ (Clerk + Supabase)
     // ==========================================
-    // Получаем ID пользователя, если он вошел через Google/Email
     const { userId } = auth();
     let isPremium = false;
 
     if (userId) {
-      // Ищем юзера в базе данных Supabase
       const { data, error } = await supabase
         .from('users')
         .select('is_premium')
         .eq('clerk_id', userId)
         .single();
       
-      // Если юзер найден и он премиум - даем зеленый свет
       if (data && data.is_premium) {
         isPremium = true;
       }
@@ -53,7 +48,6 @@ export async function POST(req: Request) {
     // ==========================================
     // ЭТАП C: ЗАЩИТА ЛИМИТОВ ПО IP (Для бесплатных)
     // ==========================================
-    // Блокируем только если это НЕ God Mode и НЕ Premium
     if (!isGodMode && !isPremium) {
       const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
       const redisKey = `freemium_limit:${ip}`;
@@ -112,7 +106,6 @@ export async function POST(req: Request) {
 
     const result = JSON.parse(completion.choices[0].message.content || '{}');
     
-    // Возвращаем результат, добавив статус премиума (понадобится нам позже для фронтенда)
     return NextResponse.json({ ...result, isPremium });
     
   } catch (error) {
