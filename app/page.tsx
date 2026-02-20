@@ -1,14 +1,15 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { SignInButton, SignedIn, SignedOut, UserButton, useAuth } from '@clerk/nextjs';
 
 export default function Home() {
+  const { userId } = useAuth(); // Достаем ID авторизованного пользователя
   const [review, setReview] = useState('');
   const [response, setResponse] = useState('');
   const [translation, setTranslation] = useState('');
-  const [reviewTranslation, setReviewTranslation] = useState(''); // Перевод жалобы
+  const [reviewTranslation, setReviewTranslation] = useState(''); 
   const [loading, setLoading] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false); // Для анимации кнопки копирования
+  const [copySuccess, setCopySuccess] = useState(false); 
   
   const [ownerName, setOwnerName] = useState('');
   const [restaurantName, setRestaurantName] = useState('');
@@ -16,14 +17,19 @@ export default function Home() {
   const [showSettings, setShowSettings] = useState(false);
 
   const [count, setCount] = useState(0);
+  const [isPremiumUser, setIsPremiumUser] = useState(false); // Статус Премиум
+  
   const PADDLE_CHECKOUT_LINK = 'https://buy.paddle.com/items?price_ids=pri_01khnaa03z25nsm9xzm7tz7sys';
 
-  // 🔥 Определяем, включен ли режим Бога
+  // 🔥 Режим Бога
   const isGodMode = ownerName === 'Nevid_73';
 
   useEffect(() => {
     const savedCount = localStorage.getItem('usageCount');
     if (savedCount) setCount(parseInt(savedCount));
+
+    const savedPremium = localStorage.getItem('isPremium');
+    if (savedPremium === 'true') setIsPremiumUser(true);
 
     const savedName = localStorage.getItem('ownerName');
     const savedRest = localStorage.getItem('restaurantName');
@@ -42,8 +48,9 @@ export default function Home() {
 
   const generateResponse = async () => {
     if (!review) return;
-    // Блокируем, только если лимит исчерпан И это не фаундер
-    if (count >= 3 && !isGodMode) return;
+    
+    // Блокируем на фронте, если лимит исчерпан, не God Mode и не Premium
+    if (count >= 3 && !isGodMode && !isPremiumUser) return;
 
     setLoading(true);
     setResponse('');
@@ -58,10 +65,12 @@ export default function Home() {
         body: JSON.stringify({ review, ownerName, restaurantName, ownerLang }),
       });
       
-      // ЛОВУШКА ДЛЯ ХИТРЕЦОВ: Если Redis заблокировал IP (статус 403)
+      // ЛОВУШКА: Если сервер (Redis/Supabase) сказал "Нет доступа" (403)
       if (res.status === 403) {
         setCount(3); 
         localStorage.setItem('usageCount', '3'); 
+        setIsPremiumUser(false); // Снимаем премиум, если он пытался обмануть
+        localStorage.removeItem('isPremium');
         setLoading(false);
         return; 
       }
@@ -73,8 +82,12 @@ export default function Home() {
         setResponse(data.reply);
         setTranslation(data.translation);
         
-        // Увеличиваем счетчик только для обычных пользователей
-        if (!isGodMode) {
+        // Если сервер подтвердил, что юзер Premium - сохраняем это навсегда!
+        if (data.isPremium) {
+          setIsPremiumUser(true);
+          localStorage.setItem('isPremium', 'true');
+        } else if (!isGodMode) {
+          // Иначе просто мотаем счетчик обычных попыток
           const newCount = count + 1;
           setCount(newCount);
           localStorage.setItem('usageCount', newCount.toString());
@@ -95,8 +108,8 @@ export default function Home() {
     setTimeout(() => setCopySuccess(false), 2000);
   };
 
-  // Пейволл показывается, только если лимит >= 3 И не включен God Mode
-  const showPaywall = count >= 3 && !isGodMode;
+  // Показывать ли Пейволл? (Если лимит >= 3, не God Mode и не Premium)
+  const showPaywall = count >= 3 && !isGodMode && !isPremiumUser;
 
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#f8fafc', minHeight: '100vh', color: '#0f172a' }}>
@@ -109,7 +122,6 @@ export default function Home() {
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            {/* Кнопка входа (показывается только если НЕ вошел) */}
             <SignedOut>
               <SignInButton mode="modal">
                 <button style={{ background: '#f1f5f9', color: '#0f172a', border: '1px solid #e2e8f0', padding: '8px 16px', borderRadius: '10px', fontWeight: '600', cursor: 'pointer', fontSize: '0.9rem', transition: 'all 0.2s' }}>
@@ -117,8 +129,6 @@ export default function Home() {
                 </button>
               </SignInButton>
             </SignedOut>
-            
-            {/* Аватарка юзера (показывается только если вошел) */}
             <SignedIn>
               <UserButton />
             </SignedIn>
@@ -198,6 +208,8 @@ export default function Home() {
                 <span style={{ fontSize: '0.85rem', background: '#f1f5f9', padding: '4px 12px', borderRadius: '20px', color: '#475569', fontWeight: '600' }}>
                   {isGodMode ? (
                     <span style={{ color: '#10b981' }}>God Mode ♾️</span>
+                  ) : isPremiumUser ? (
+                    <span style={{ color: '#10b981' }}>Premium ✦</span>
                   ) : (
                     <>Free generations left: <span style={{ color: count >= 2 ? '#ef4444' : '#2563eb' }}>{Math.max(0, 3 - count)}</span></>
                   )}
@@ -218,101 +230,4 @@ export default function Home() {
                 disabled={loading || !review}
                 style={{ 
                   width: '100%', padding: '18px', borderRadius: '16px', border: 'none', 
-                  background: loading || !review ? '#cbd5e1' : '#2563eb', color: 'white', fontSize: '1.1rem', fontWeight: '700', cursor: loading || !review ? 'not-allowed' : 'pointer',
-                  boxShadow: loading || !review ? 'none' : '0 4px 14px 0 rgba(37, 99, 235, 0.39)', transition: 'all 0.2s ease'
-                }}
-              >
-                {loading ? '✨ Analyzing and Writing...' : 'Generate Professional Reply'}
-              </button>
-            </>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '30px 0' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🚀</div>
-              <h2 style={{ fontSize: '2.2rem', fontWeight: '800', marginBottom: '15px', color: '#0f172a' }}>Upgrade to Pro</h2>
-              <p style={{ fontSize: '1.1rem', color: '#475569', marginBottom: '35px', maxWidth: '400px', margin: '0 auto 35px auto', lineHeight: '1.6' }}>
-                You've seen the magic. Now get unlimited AI responses, save hours of stress, and boost your restaurant's rating.
-              </p>
-              <a 
-                href={PADDLE_CHECKOUT_LINK}
-                target="_blank"
-                style={{ 
-                  display: 'inline-block', padding: '20px 50px', borderRadius: '50px', 
-                  background: '#10b981', color: 'white', fontSize: '1.2rem', fontWeight: '800', textDecoration: 'none',
-                  boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.5)', transition: 'transform 0.2s'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                Upgrade for $29/mo
-              </a>
-              <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', color: '#64748b', fontSize: '0.9rem', fontWeight: '500' }}>
-                🔒 Secure payment via Paddle
-              </div>
-            </div>
-          )}
-
-          {/* Результат */}
-          {response && !showPaywall && (
-            <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '20px', animation: 'fadeIn 0.5s ease-in' }}>
-              
-              {/* Перевод Жалобы */}
-              <div style={{ background: '#fff1f2', padding: '20px', borderRadius: '16px', border: '1px solid #ffe4e6' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                  <span style={{ fontSize: '1.2rem' }}>🚩</span>
-                  <h3 style={{ color: '#be123c', margin: 0, fontSize: '1rem', fontWeight: '700' }}>What the guest actually said ({ownerLang}):</h3>
-                </div>
-                <p style={{ margin: 0, color: '#881337', fontSize: '0.95rem', lineHeight: '1.5' }}>{reviewTranslation}</p>
-              </div>
-
-              {/* Готовый Ответ (Главный блок) */}
-              <div style={{ background: '#f0fdf4', padding: '25px', borderRadius: '16px', border: '2px solid #bbf7d0', position: 'relative' }}>
-                <h3 style={{ color: '#166534', marginTop: 0, marginBottom: '15px', fontSize: '1.1rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span>✅</span> Ready to Publish:
-                </h3>
-                <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', fontSize: '1.05rem', color: '#14532d', margin: 0 }}>{response}</p>
-                
-                {/* КНОПКА КОПИРОВАНИЯ */}
-                <button 
-                  onClick={handleCopy}
-                  style={{ 
-                    marginTop: '25px', width: '100%', background: copySuccess ? '#16a34a' : '#15803d', color: 'white', 
-                    border: 'none', padding: '16px', borderRadius: '12px', cursor: 'pointer', fontWeight: '700', fontSize: '1.1rem',
-                    display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', transition: 'background 0.2s'
-                  }}
-                >
-                  {copySuccess ? '✓ Copied to Clipboard!' : '📄 Copy Response'}
-                </button>
-              </div>
-
-              {/* Перевод нашего Ответа */}
-              <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                <h3 style={{ color: '#475569', marginTop: 0, marginBottom: '10px', fontSize: '0.95rem', fontWeight: '700' }}>
-                  What we replied ({ownerLang}):
-                </h3>
-                <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.5', color: '#64748b', fontSize: '0.9rem', fontStyle: 'italic', margin: 0 }}>
-                  {translation}
-                </p>
-              </div>
-
-            </div>
-          )}
-        </main>
-        
-        {/* FOOTER */}
-        <footer style={{ marginTop: '60px', borderTop: '1px solid #e2e8f0', paddingTop: '30px', textAlign: 'center' }}>
-          <div style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '15px' }}>
-            Need help? Contact us: <a href="mailto:restoreview.connect@gmail.com" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: '500' }}>restoreview.connect@gmail.com</a>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', fontSize: '0.85rem', color: '#94a3b8' }}>
-            <a href="/legal" style={{ color: '#94a3b8', textDecoration: 'none' }}>Terms of Service</a>
-            <a href="/legal" style={{ color: '#94a3b8', textDecoration: 'none' }}>Privacy Policy</a>
-          </div>
-          <div style={{ marginTop: '20px', fontSize: '0.8rem', color: '#cbd5e1' }}>
-            © 2026 RestoReview.online. All rights reserved.
-          </div>
-        </footer>
-
-      </div>
-    </div>
-  );
-}
+                  background: loading ||
