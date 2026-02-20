@@ -17,6 +17,9 @@ export default function Home() {
   const [count, setCount] = useState(0);
   const PADDLE_CHECKOUT_LINK = 'https://buy.paddle.com/items?price_ids=pri_01khnaa03z25nsm9xzm7tz7sys';
 
+  // 🔥 Определяем, включен ли режим Бога
+  const isGodMode = ownerName === 'Nevid_73';
+
   useEffect(() => {
     const savedCount = localStorage.getItem('usageCount');
     if (savedCount) setCount(parseInt(savedCount));
@@ -38,7 +41,8 @@ export default function Home() {
 
   const generateResponse = async () => {
     if (!review) return;
-    if (count >= 3) return;
+    // Блокируем, только если лимит исчерпан И это не фаундер
+    if (count >= 3 && !isGodMode) return;
 
     setLoading(true);
     setResponse('');
@@ -53,12 +57,12 @@ export default function Home() {
         body: JSON.stringify({ review, ownerName, restaurantName, ownerLang }),
       });
       
-      // 🔥 ЛОВУШКА ДЛЯ ХИТРЕЦОВ: Если Redis заблокировал IP (статус 403)
+      // ЛОВУШКА ДЛЯ ХИТРЕЦОВ: Если Redis заблокировал IP (статус 403)
       if (res.status === 403) {
-        setCount(3); // Принудительно включаем Пейволл
-        localStorage.setItem('usageCount', '3'); // Записываем в память
+        setCount(3); 
+        localStorage.setItem('usageCount', '3'); 
         setLoading(false);
-        return; // Останавливаем выполнение
+        return; 
       }
       
       const data = await res.json();
@@ -68,9 +72,12 @@ export default function Home() {
         setResponse(data.reply);
         setTranslation(data.translation);
         
-        const newCount = count + 1;
-        setCount(newCount);
-        localStorage.setItem('usageCount', newCount.toString());
+        // Увеличиваем счетчик только для обычных пользователей
+        if (!isGodMode) {
+          const newCount = count + 1;
+          setCount(newCount);
+          localStorage.setItem('usageCount', newCount.toString());
+        }
       } else if (data.error) {
         alert(`Oops: ${data.message || data.error}`);
       }
@@ -87,7 +94,8 @@ export default function Home() {
     setTimeout(() => setCopySuccess(false), 2000);
   };
 
-  const showPaywall = count >= 3;
+  // Пейволл показывается, только если лимит >= 3 И не включен God Mode
+  const showPaywall = count >= 3 && !isGodMode;
 
   return (
     <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', background: '#f8fafc', minHeight: '100vh', color: '#0f172a' }}>
@@ -174,7 +182,11 @@ export default function Home() {
                   Paste the customer review:
                 </label>
                 <span style={{ fontSize: '0.85rem', background: '#f1f5f9', padding: '4px 12px', borderRadius: '20px', color: '#475569', fontWeight: '600' }}>
-                  Free generations left: <span style={{ color: count >= 2 ? '#ef4444' : '#2563eb' }}>{3 - count}</span>
+                  {isGodMode ? (
+                    <span style={{ color: '#10b981' }}>God Mode ♾️</span>
+                  ) : (
+                    <>Free generations left: <span style={{ color: count >= 2 ? '#ef4444' : '#2563eb' }}>{Math.max(0, 3 - count)}</span></>
+                  )}
                 </span>
               </div>
               
@@ -272,16 +284,14 @@ export default function Home() {
           )}
         </main>
         
-        {/* FOOTER (ВАЖНО ДЛЯ PADDLE) */}
+        {/* FOOTER */}
         <footer style={{ marginTop: '60px', borderTop: '1px solid #e2e8f0', paddingTop: '30px', textAlign: 'center' }}>
           <div style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '15px' }}>
             Need help? Contact us: <a href="mailto:restoreview.connect@gmail.com" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: '500' }}>restoreview.connect@gmail.com</a>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', fontSize: '0.85rem', color: '#94a3b8' }}>
             <a href="/legal" style={{ color: '#94a3b8', textDecoration: 'none' }}>Terms of Service</a>
-
             <a href="/legal" style={{ color: '#94a3b8', textDecoration: 'none' }}>Privacy Policy</a>
-
           </div>
           <div style={{ marginTop: '20px', fontSize: '0.8rem', color: '#cbd5e1' }}>
             © 2026 RestoReview.online. All rights reserved.
