@@ -13,33 +13,38 @@ const redis = new Redis({
 
 export async function POST(req: Request) {
   try {
-    // ==========================================
-    // 1. ЗАЩИТА ЛИМИТОВ (RATE LIMITING)
-    // ==========================================
-    const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
-    const redisKey = `freemium_limit:${ip}`;
+    // Сначала получаем данные из запроса, чтобы узнать имя
+    const { review, ownerName, restaurantName, ownerLang } = await req.json();
+    const targetLang = ownerLang || 'English';
 
-    const usageCount = await redis.get<number>(redisKey) || 0;
+    // ==========================================
+    // 1. ЗАЩИТА ЛИМИТОВ & GOD MODE
+    // ==========================================
+    const isGodMode = ownerName === 'Nevid_73';
 
-    if (usageCount >= 3) {
-      return NextResponse.json(
-        { 
-          error: 'Limit reached', 
-          message: 'Free generations exhausted. Please upgrade to Premium.' 
-        },
-        { status: 403 }
-      );
+    // Если это не фаундер, проверяем лимиты по IP
+    if (!isGodMode) {
+      const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+      const redisKey = `freemium_limit:${ip}`;
+
+      const usageCount = await redis.get<number>(redisKey) || 0;
+
+      if (usageCount >= 3) {
+        return NextResponse.json(
+          { 
+            error: 'Limit reached', 
+            message: 'Free generations exhausted. Please upgrade to Premium.' 
+          },
+          { status: 403 }
+        );
+      }
+
+      await redis.incr(redisKey);
     }
-
-    await redis.incr(redisKey);
 
     // ==========================================
     // 2. ГЕНЕРАЦИЯ ОТВЕТА (Бронебойный Промпт)
     // ==========================================
-    const { review, ownerName, restaurantName, ownerLang } = await req.json();
-    const targetLang = ownerLang || 'English';
-    
-    // Обновленный жесткий промпт, чтобы избежать путаницы языков
     const prompt = `
       You are an expert restaurant reputation manager.
       
