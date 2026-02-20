@@ -5,7 +5,7 @@ import { Redis } from '@upstash/redis';
 // Инициализируем OpenAI
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Инициализируем Redis (Vercel сам возьмет ключи из Environment Variables)
+// Инициализируем Redis для защиты лимитов
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
@@ -16,14 +16,11 @@ export async function POST(req: Request) {
     // ==========================================
     // 1. ЗАЩИТА ЛИМИТОВ (RATE LIMITING)
     // ==========================================
-    // Получаем IP пользователя. На Vercel он всегда в заголовке x-forwarded-for
     const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
     const redisKey = `freemium_limit:${ip}`;
 
-    // Проверяем текущее количество генераций для этого IP
     const usageCount = await redis.get<number>(redisKey) || 0;
 
-    // Если 3 генерации исчерпаны — отбиваем запрос (Статус 403)
     if (usageCount >= 3) {
       return NextResponse.json(
         { 
@@ -34,38 +31,40 @@ export async function POST(req: Request) {
       );
     }
 
-    // Если попытки есть — списываем 1 генерацию
     await redis.incr(redisKey);
 
     // ==========================================
-    // 2. ГЕНЕРАЦИЯ ОТВЕТА (Твой код OpenAI)
+    // 2. ГЕНЕРАЦИЯ ОТВЕТА (Бронебойный Промпт)
     // ==========================================
     const { review, ownerName, restaurantName, ownerLang } = await req.json();
     const targetLang = ownerLang || 'English';
     
+    // Обновленный жесткий промпт, чтобы избежать путаницы языков
     const prompt = `
       You are an expert restaurant reputation manager.
       
       CONTEXT:
-      Restaurant Name: "${restaurantName || 'Our Restaurant'}"
-      Owner Name: "${ownerName || 'Management'}"
+      - Restaurant Name: "${restaurantName || 'Our Restaurant'}"
+      - Owner Name: "${ownerName || 'Management'}"
+      - Owner's Native Language: "${targetLang}"
       
-      TASK:
-      1. Analyze the customer review.
-      2. Translate the customer's original review into ${targetLang} so the owner fully understands the complaint.
-      3. Write a professional, empathetic, and polite reply to the review in the SAME language as the original review.
-      4. Sign the reply with the Owner Name and Restaurant Name.
-      5. Provide a translation of your reply into ${targetLang}.
+      CUSTOMER REVIEW:
+      "${review}"
+      
+      INSTRUCTIONS:
+      1. Identify the language of the CUSTOMER REVIEW.
+      2. Write a professional, empathetic, and polite reply to the review. 
+         CRITICAL REQUIREMENT: The "reply" MUST be written in the EXACT SAME LANGUAGE as the CUSTOMER REVIEW. Do not use the Owner's Native Language for the reply unless the customer also used it.
+      3. Sign the reply with the Owner Name and Restaurant Name.
+      4. Translate the original CUSTOMER REVIEW into the Owner's Native Language ("${targetLang}").
+      5. Translate your generated reply into the Owner's Native Language ("${targetLang}").
 
-      FORMAT:
-      Return strictly in JSON format:
+      EXPECTED JSON OUTPUT FORMAT:
       {
-        "reviewTranslation": "Translation of the original customer review into ${targetLang}...",
-        "reply": "The actual reply text in the customer's language...",
-        "translation": "The translation of the reply for the owner in ${targetLang}..."
+        "reviewTranslation": "Translation of the CUSTOMER REVIEW into ${targetLang}",
+        "reply": "Your professional reply written strictly in the customer's original language",
+        "translation": "Translation of your reply into ${targetLang}"
       }
-
-      Customer Review: "${review}"
     `;
 
     const completion = await openai.chat.completions.create({
