@@ -19,7 +19,7 @@ export default function Home() {
   const [count, setCount] = useState(0);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   
-  const PADDLE_CHECKOUT_LINK = 'https://buy.paddle.com/items?price_ids=pri_01khnaa03z25nsm9xzm7tz7sys';
+  const PADDLE_CHECKOUT_LINK = 'https://buy.paddle.com/items?price_ids=pro_01khz8pt2sz410ngbj5bga3ehv';
 
   const isGodMode = ownerName === 'Nevid_73';
 
