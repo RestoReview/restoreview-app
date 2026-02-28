@@ -19,7 +19,8 @@ export default function Home() {
   const [count, setCount] = useState(0);
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   
-  const PADDLE_CHECKOUT_LINK = 'https://buy.paddle.com/items?price_ids=pro_01khz8pt2sz410ngbj5bga3ehv';
+  // 🔥 ТВОЯ НОВАЯ ССЫЛКА LEMON SQUEEZY
+  const LEMON_SQUEEZY_LINK = 'https://resto-review.lemonsqueezy.com/checkout/buy/3f1e35dc-2ea1-4db4-bb3c-3f893b13ec03';
 
   const isGodMode = ownerName === 'Nevid_73';
 
@@ -249,7 +250,7 @@ export default function Home() {
               ) : (
                 <>
                   <a 
-                    href={`${PADDLE_CHECKOUT_LINK}&custom_data[user_id]=${userId}`}
+                    href={`${LEMON_SQUEEZY_LINK}?checkout[custom][user_id]=${userId}`}
                     target="_blank"
                     style={{ 
                       display: 'inline-block', padding: '20px 50px', borderRadius: '50px', 
@@ -277,7 +278,7 @@ export default function Home() {
               )}
 
               <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', color: '#64748b', fontSize: '0.9rem', fontWeight: '500' }}>
-                🔒 Secure payment via Paddle
+                🔒 Secure payment via Lemon Squeezy
               </div>
             </div>
           )}
