@@ -3,8 +3,19 @@ import Script from 'next/script';
 import { ClerkProvider } from '@clerk/nextjs';
 
 export const metadata: Metadata = {
-  title: 'RestoReview | AI Reputation Manager',
-  description: 'Turn angry guests into loyal customers with AI-generated review responses in seconds.',
+  title: 'RestoReview - AI Review Manager',
+  description: 'Turn Angry Guests Into Loyal Customers in seconds.',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
+    ]
+  },
+  manifest: '/site.webmanifest',
 };
 
 export default function RootLayout({
