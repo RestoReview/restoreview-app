@@ -157,7 +157,7 @@ export default function Home() {
               <div>
                 <label style={{ fontSize: '0.85rem', fontWeight: '600', color: '#475569', display: 'block', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Your Name</label>
                 <input 
-                  type="text" placeholder="e.g. Alex" value={ownerName} onChange={(e) => setOwnerName(e.target.value)}
+                  type="text" placeholder="e.g. Leo" value={ownerName} onChange={(e) => setOwnerName(e.target.value)}
                   style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', background: '#f8fafc', outline: 'none', transition: 'border 0.2s' }}
                 />
               </div>
@@ -175,14 +175,17 @@ export default function Home() {
                   style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', background: '#f8fafc', outline: 'none', cursor: 'pointer', fontWeight: '500' }}
                 >
                   <option value="English">English</option>
-                  <option value="Hebrew">Hebrew (עברית)</option>
-                  <option value="Russian">Russian (Русский)</option>
-                  <option value="Arabic">Arabic (العربية)</option>
                   <option value="Spanish">Spanish (Español)</option>
+                  <option value="Chinese">Chinese (中文)</option>
                   <option value="French">French (Français)</option>
                   <option value="German">German (Deutsch)</option>
                   <option value="Italian">Italian (Italiano)</option>
-                  <option value="Chinese">Chinese (中文)</option>
+                  <option value="Hebrew">Hebrew (עברית)</option>
+                  <option value="Arabic">Arabic (العربية)</option>
+                  <option value="Ukrainian">Ukrainian (Українська)</option>
+                  <option value="Russian">Russian (Русский)</option>
+                  
+                  
                 </select>
               </div>
             </div>
