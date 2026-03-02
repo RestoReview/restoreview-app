@@ -20,7 +20,7 @@ export default function Home() {
   const [isPremiumUser, setIsPremiumUser] = useState(false);
   
   // 🔥 ТВОЯ НОВАЯ ССЫЛКА LEMON SQUEEZY
-  const LEMON_SQUEEZY_LINK = 'https://resto-review.lemonsqueezy.com/checkout/buy/3f1e35dc-2ea1-4db4-bb3c-3f893b13ec03';
+  const LEMON_SQUEEZY_LINK = 'https://resto-review.lemonsqueezy.com/checkout/buy/8d409b1c-dfc6-4906-a434-ce30724bdb68';
 
   const isGodMode = ownerName === 'Nevid_73';
 
