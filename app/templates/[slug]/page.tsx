@@ -75,7 +75,3 @@ export default function TemplatePage({ params }: { params: { slug: string } }) {
     </div>
   );
 }
-      {/* Шаг 5: Пейволл-крючок (Call To Action) */}
-      <div className="bg-slate-900 text-white rounded-3xl p-10 text-center shadow-xl">
-        <h2 className="text-3xl font-bold mb-4">
-          Every Review
