@@ -89,4 +89,24 @@
     "bad_example": "Our chefs know exactly how to cook our dishes and we rarely get complaints like this. If something was wrong you should have told the server instead of posting a one-star review.",
     "good_example": "We’re very sorry to hear that your meal did not meet expectations. Serving food at the correct temperature and quality is extremely important to us, and your experience is not what we aim to deliver. We’d appreciate the chance to learn more about your visit and make this right. Please contact us directly so we can follow up."
   }
+  [
+  {
+    "slug": "respond-1-star-yelp-food-poisoning",
+    "title": "How to Respond to a 1-Star Yelp Review About Food Poisoning",
+    "description": "Allegations of food poisoning are a severe PR crisis. If left unanswered, they can trigger health inspections and scare away hundreds of potential guests. Here is how to handle it professionally.",
+    "platform": "Yelp",
+    "issue": "food poisoning",
+    "bad_example": "This is a lie! Nobody else got sick. You probably ate somewhere else before coming to our restaurant. We have a perfect health score!",
+    "good_example": "Dear guest, we take allegations of foodborne illness extremely seriously, as the health and safety of our patrons is our highest priority. We would like to investigate this immediately. Please contact our management team directly at [Phone/Email] so we can gather more details."
+  },
+  {
+    "slug": "google-review-rude-waiter",
+    "title": "Handling a Google Review About a Rude Waiter",
+    "description": "A review about a rude staff member hurts your hospitality image. The key is not to get defensive, but to show that management is holding the team accountable.",
+    "platform": "Google",
+    "issue": "rude staff",
+    "bad_example": "Our staff is working 12-hour shifts and doing their best. If you were nicer to them, maybe they would smile more.",
+    "good_example": "Thank you for bringing this to our attention. This level of service does not reflect our standards. We are addressing your feedback with our front-of-house team to ensure this doesn't happen again."
+  }
+]
 ]
