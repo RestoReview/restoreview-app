@@ -1,6 +1,27 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import templatesData from '@/data/seo-templates.json';
+
+// Встраиваем базу данных прямо в код страницы, чтобы обойти проблемы с путями!
+const templatesData = [
+  {
+    slug: "respond-1-star-yelp-food-poisoning",
+    title: "How to Respond to a 1-Star Yelp Review About Food Poisoning",
+    description: "Allegations of food poisoning are a severe PR crisis. If left unanswered, they can trigger health inspections and scare away hundreds of potential guests. Here is how to handle it professionally.",
+    platform: "Yelp",
+    issue: "food poisoning",
+    bad_example: "This is a lie! Nobody else got sick. We have a perfect health score!",
+    good_example: "Dear guest, we take allegations of foodborne illness extremely seriously, as the health and safety of our patrons is our highest priority. We would like to investigate this immediately. Please contact our management team directly so we can gather more details."
+  },
+  {
+    slug: "google-review-rude-waiter",
+    title: "Handling a Google Review About a Rude Waiter",
+    description: "A review about a rude staff member hurts your hospitality image. The key is not to get defensive, but to show that management is holding the team accountable.",
+    platform: "Google",
+    issue: "rude staff",
+    bad_example: "Our staff is working 12-hour shifts. If you were nicer to them, maybe they would smile more.",
+    good_example: "Thank you for bringing this to our attention. This level of service does not reflect our standards. We are addressing your feedback with our front-of-house team to ensure this doesn't happen again."
+  }
+];
 
 export async function generateStaticParams() {
   return templatesData.map((template) => ({
