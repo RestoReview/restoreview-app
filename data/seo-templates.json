@@ -1,11 +1,92 @@
 [
   {
-    "slug": "respond-1-star-google-rude-staff",
-    "title": "How to Respond to a 1-Star Google Review About Rude Staff",
-    "description": "Don't panic! Here are 3 proven templates to handle a 1-star Google review about rude waitstaff and protect your restaurant's reputation.",
+    "slug": "respond-1-star-google-food-poisoning",
+    "title": "How to Respond to a 1-Star Google Review Alleging Food Poisoning",
+    "description": "Food poisoning claims can seriously damage a restaurant’s reputation and even trigger health authority scrutiny. The key is to acknowledge the concern without admitting liability, show empathy, and move the conversation offline while signaling strong food safety standards.",
     "platform": "Google",
-    "issue": "rude staff",
-    "bad_example": "We don't have rude staff, the customer is lying.",
-    "good_example": "Thank you for your feedback. We are so sorry to hear about your experience. Hospitality is our core value, and we are addressing this with our front-of-house team immediately..."
+    "issue": "food poisoning allegations",
+    "bad_example": "This is ridiculous. None of our other guests got sick and we follow all health regulations. It sounds like you’re blaming us for something that probably came from somewhere else. Please don’t spread false information about our restaurant.",
+    "good_example": "We’re very sorry to hear that you felt unwell after your visit, and we take concerns about food safety extremely seriously. Our team follows strict food handling and safety procedures, and we’d appreciate the opportunity to look into this further. Please contact us directly at manager@restaurant.com so we can gather more details and address your experience personally."
+  },
+  {
+    "slug": "respond-1-star-yelp-rude-bartender",
+    "title": "How to Respond to a 1-Star Yelp Review About a Rude Bartender",
+    "description": "Complaints about rude staff can make potential customers question the entire service culture of a restaurant. The best response acknowledges the experience, reassures readers that hospitality standards matter, and invites the reviewer to continue the conversation privately.",
+    "platform": "Yelp",
+    "issue": "extremely rude bartender",
+    "bad_example": "Our bartender is one of the best in the city, so I find this hard to believe. Sometimes customers are the ones being rude first. If you had an issue you should have spoken to a manager instead of trashing us online.",
+    "good_example": "Thank you for sharing your feedback. We’re sorry to hear that your interaction at the bar didn’t reflect the welcoming experience we aim to provide every guest. This is not the standard we hold ourselves to, and we’d like to learn more about what happened. Please reach out to us directly so we can address this with our team."
+  },
+  {
+    "slug": "respond-1-star-tripadvisor-long-wait-food",
+    "title": "How to Respond to a 1-Star TripAdvisor Review About Waiting Over an Hour for Food",
+    "description": "Long wait complaints signal operational problems and can scare off travelers relying on quick service during trips. The response should validate the frustration while explaining that delays are taken seriously and offering a path to resolve the issue.",
+    "platform": "TripAdvisor",
+    "issue": "waiting over an hour for food",
+    "bad_example": "We were extremely busy that night and everyone had to wait. If you came during peak dinner hours you should expect delays. It’s unfair to leave a 1-star review when the whole restaurant was full.",
+    "good_example": "We’re very sorry to hear about the long wait you experienced. While busy evenings can sometimes slow service, waiting that long for a meal is not the experience we want our guests to have. We’d appreciate the chance to learn more about your visit so we can improve. Please contact us directly so we can follow up."
+  },
+  {
+    "slug": "respond-1-star-google-hair-in-food",
+    "title": "How to Respond to a 1-Star Google Review About Finding a Hair in the Food",
+    "description": "Discovering a foreign object in food is one of the most damaging restaurant complaints because it immediately raises cleanliness concerns. A calm, accountable response reassures future readers that hygiene standards are taken seriously.",
+    "platform": "Google",
+    "issue": "finding a hair or bug in the food",
+    "bad_example": "Our kitchen staff wears hairnets and this basically never happens, so I’m not sure how that could even be possible. Maybe it came from somewhere else. Either way, leaving a one-star review for that seems extreme.",
+    "good_example": "We’re truly sorry to hear about your experience. Finding anything unexpected in a dish is understandably upsetting, and it’s not the level of quality or care we strive for. We take cleanliness and food preparation standards very seriously and would like to investigate what happened. Please contact us directly so we can address this with our team."
+  },
+  {
+    "slug": "respond-1-star-yelp-fake-review-competitor",
+    "title": "How to Respond to a 1-Star Yelp Review That Appears to Be Fake",
+    "description": "Fake or competitor-driven reviews are frustrating but responding emotionally can worsen the situation. The correct strategy is to stay calm, question the authenticity professionally, and invite the reviewer to verify their experience offline.",
+    "platform": "Yelp",
+    "issue": "fake 1-star review from a competitor",
+    "bad_example": "This review is obviously fake and probably from a competitor trying to damage our business. We have no record of you ever visiting. Stop trying to sabotage us.",
+    "good_example": "We take all feedback seriously, but we’re unable to locate any record of this visit in our system. If you did dine with us, we’d truly appreciate the chance to learn more about your experience and make things right. Please contact us directly so we can verify the details and address your concerns."
+  },
+  {
+    "slug": "respond-1-star-tripadvisor-racism-allegation",
+    "title": "How to Respond to a 1-Star TripAdvisor Review Alleging Discrimination",
+    "description": "Allegations of discrimination are among the most serious reputation risks a hospitality business can face. A responsible response shows empathy, emphasizes inclusivity, and moves the discussion offline for a thorough review.",
+    "platform": "TripAdvisor",
+    "issue": "allegations of racism or discrimination",
+    "bad_example": "We are absolutely not racist and it’s offensive that you would accuse our staff of that. We treat everyone the same and your claims are completely unfair.",
+    "good_example": "We’re very concerned to read your feedback. Our restaurant is committed to creating a welcoming and respectful environment for every guest, and we take concerns like this extremely seriously. We would appreciate the opportunity to speak with you directly and understand what happened. Please contact our management team so we can review this situation carefully."
+  },
+  {
+    "slug": "respond-1-star-google-valet-car-scratched",
+    "title": "How to Respond to a 1-Star Google Review About Valet Parking Damaging a Car",
+    "description": "Vehicle damage claims can quickly escalate into legal and reputational risks for restaurants offering valet service. The response should acknowledge the concern, avoid admitting fault publicly, and move the issue into a direct resolution channel.",
+    "platform": "Google",
+    "issue": "terrible valet parking experience",
+    "bad_example": "Our valet company has parked thousands of cars without issues. There’s no way to prove that the scratch happened here, so blaming us publicly isn’t fair.",
+    "good_example": "We’re sorry to hear about your experience with our valet service. We understand how concerning it is to notice damage to your vehicle. We’d like to look into this matter with our valet partner and gather more details. Please reach out to us directly so we can assist and review what may have happened."
+  },
+  {
+    "slug": "respond-1-star-yelp-hidden-fees-autograt",
+    "title": "How to Respond to a 1-Star Yelp Review About Hidden Fees or Auto-Gratuity",
+    "description": "Billing transparency is a sensitive issue that can make customers feel misled or cheated. The best response clarifies policies respectfully while acknowledging the guest’s frustration and offering to discuss the charge directly.",
+    "platform": "Yelp",
+    "issue": "hidden fees or auto gratuity complaints",
+    "bad_example": "The auto-gratuity is clearly listed on the menu and receipt, so I’m not sure why you’re complaining about it now. This is standard practice and guests should read before ordering.",
+    "good_example": "Thank you for your feedback. We’re sorry to hear that the charge on your bill came as a surprise. Transparency is important to us, and we always aim to communicate our policies clearly. We’d be happy to review your experience and answer any questions directly if you’d like to contact our management team."
+  },
+  {
+    "slug": "respond-1-star-tripadvisor-dirty-restrooms",
+    "title": "How to Respond to a 1-Star TripAdvisor Review About Dirty Restrooms",
+    "description": "Restroom cleanliness strongly influences how guests perceive the overall hygiene of a restaurant. A good response acknowledges the issue, reassures readers about cleaning standards, and shows commitment to immediate improvement.",
+    "platform": "TripAdvisor",
+    "issue": "dirty restrooms during a busy shift",
+    "bad_example": "It was a packed night and things happen when hundreds of people are using the restrooms. Our staff can’t be in there every minute cleaning.",
+    "good_example": "We appreciate you bringing this to our attention and we’re sorry the restrooms were not in the condition you expected. Cleanliness throughout the restaurant is extremely important to us, even during busy shifts. Your feedback helps us address gaps in our process, and we’d welcome the opportunity to discuss your visit further."
+  },
+  {
+    "slug": "respond-1-star-google-cold-undercooked-food",
+    "title": "How to Respond to a 1-Star Google Review About Cold or Undercooked Food",
+    "description": "Complaints about improperly cooked food raise concerns about both quality and safety. The right response validates the guest’s disappointment, reassures readers about kitchen standards, and encourages a private follow-up.",
+    "platform": "Google",
+    "issue": "cold and undercooked food",
+    "bad_example": "Our chefs know exactly how to cook our dishes and we rarely get complaints like this. If something was wrong you should have told the server instead of posting a one-star review.",
+    "good_example": "We’re very sorry to hear that your meal did not meet expectations. Serving food at the correct temperature and quality is extremely important to us, and your experience is not what we aim to deliver. We’d appreciate the chance to learn more about your visit and make this right. Please contact us directly so we can follow up."
   }
 ]
