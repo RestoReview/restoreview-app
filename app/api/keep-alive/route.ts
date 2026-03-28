@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Redis } from '@upstash/redis';
 
-// 1. Подключаем базы (используем твои стандартные переменные окружения)
+// ЖЕСТКИЙ ЗАПРЕТ КЭШИРОВАНИЯ - ЭТО РЕШИТ ПРОБЛЕМУ
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// 1. Подключаем базы 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
@@ -16,15 +20,13 @@ const supabase = createClient(
 export async function GET(request: Request) {
   try {
     // --- ПРОБУЖДЕНИЕ UPSTASH (REDIS) ---
-    // Записываем микро-ключ, который сам удалится через 10 секунд
     await redis.set('cron-ping', 'awake', { ex: 10 });
 
     // --- ПРОБУЖДЕНИЕ SUPABASE (POSTGRESQL) ---
-    // Делаем легкий запрос. Даже если таблица 'users' пустая или называется иначе, 
-    // сам факт обращения к API Supabase сбрасывает таймер "засыпания".
-    await supabase.from('users').select('id').limit(1);
+    // Добавим count, чтобы запрос был еще легче, но гарантированно пинговал базу
+    await supabase.from('users').select('*', { count: 'exact', head: true });
 
-    console.log('✅ Cron ping successful: DBs are awake!');
+    console.log('✅ Cron ping successful: DBs are genuinely awake!');
 
     return NextResponse.json({ 
       status: 'success', 
